@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:@localhost:3306/scanyourlungs"
+}
+
+model appointment {
+  id               Int      @id @default(autoincrement())
+  date_appointment DateTime @db.Date
+  patient_id       Int
+  pulmonologist_id Int
+
+  @@index([patient_id], map: "appointment_ibfk_1")
+  @@index([pulmonologist_id], map: "appointment_ibfk_2")
+}
+
+model doctor {
+  id         Int    @id @default(autoincrement())
+  first_name String @db.VarChar(30)
+  last_name  String @db.VarChar(30)
+  signature  String @db.VarChar(30)
+  email      String @db.VarChar(255)
+  password   String @db.VarChar(255)
+  role       String @db.VarChar(30)
+}
+
+model patient {
+  id    Int    @id @default(autoincrement())
+  nom   String @db.VarChar(255)
+  email String @db.VarChar(255)
+}
+
+model report {
+  id            Int      @id @default(autoincrement())
+  date          DateTime @db.Date
+  description   String   @db.Text
+  radiologue_id Int
+  patient_id    Int
+  scan_id       Int
+
+  @@index([patient_id], map: "report_ibfk_1")
+  @@index([radiologue_id], map: "report_ibfk_2")
+  @@index([scan_id], map: "report_ibfk_3")
+}
+
+model scan {
+  id        Int      @id @default(autoincrement())
+  url       String   @db.VarChar(255)
+  date_scan DateTime @db.DateTime(0)
+}
